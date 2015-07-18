@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<store nom="gg">
+  <department nom="ff">
+    <shelf nom="dd" x="129" y="101" width="30" height="30" />
+    <shelf nom="dd" x="539" y="155" width="30" height="30" />
+  </department>
+</store>
