@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<store nom="Storr">
-  <department nom="Food">
-    <shelf nom="Confitures" x="480" y="113" width="30" height="30" />
-    <shelf nom="Chocolat" x="419" y="203" width="30" height="30" />
-    <shelf nom="Tamere" x="272" y="114" width="30" height="30" />
-  </department>
-</store>
