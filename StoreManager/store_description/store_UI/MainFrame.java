@@ -5,12 +5,16 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.time.chrono.Era;
 import java.util.ArrayList;
@@ -19,6 +23,7 @@ import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -28,6 +33,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
@@ -48,11 +54,13 @@ public class MainFrame extends JFrame {
     private JMenuItem newStoreItem, loadStoreItem, saveStoreItem;
     private JToolBar toolbar;
     private JTabbedPane tabBar;
+    private JPopupMenu popupTabMenu;
     private DepartmentCanvas currentView;
     private CanvasMouseListener cml;
     private Department departmentEdited;
     private JComboBox<String> comboBox;
     private ArrayList<DepartmentCanvas> allViews;
+    private ArrayList<DepartmentCanvas> loadedViews;
     private Boolean isEditing = false;
 
     public MainFrame() {
@@ -98,7 +106,7 @@ public class MainFrame extends JFrame {
 	    pnlTab.add (addTab);
 
 	    tabBar.setTabComponentAt (tabBar.getTabCount () - 1, pnlTab);
-
+	    // Listener du bouton Add
 	    ActionListener listener = new ActionListener () {
 	    	public void actionPerformed(ActionEvent evt) {
 	    		addTabActionPerformed(evt);
@@ -107,6 +115,7 @@ public class MainFrame extends JFrame {
 	    addTab.setFocusable (false);
 	    addTab.addActionListener (listener);
 	    
+	    // Listener pour changement d'onglet 
 	    ChangeListener changeListener = new ChangeListener() {
 	        public void stateChanged(ChangeEvent changeEvent) {
 	          JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
@@ -121,10 +130,31 @@ public class MainFrame extends JFrame {
 	        	  currentView.setEditionMode(false);
 	        }
 	    };
-	    tabBar.addChangeListener(changeListener);  
+	    tabBar.addChangeListener(changeListener);
+	    
+	    // Initialisation du popup menu des onglets (renommer/effacer)
+	    popupTabMenu = new JPopupMenu();
+	    JMenuItem renameTabMenuItem = new JMenuItem("Rename");
+	    renameTabMenuItem.addActionListener(
+				new ActionListener(){
+					 public void actionPerformed(ActionEvent evt)
+		                {
+		                    renameTabMenuItemActionPerformed(evt);
+		                }
+				});
+	    popupTabMenu.add(renameTabMenuItem);
+	    JMenuItem deleteTabMenuItem = new JMenuItem("Delete");
+	    deleteTabMenuItem.addActionListener(
+				new ActionListener(){
+					 public void actionPerformed(ActionEvent evt)
+		                {
+		                    deleteTabMenuItemActionPerformed(evt);
+		                }
+				});
+	    popupTabMenu.add(deleteTabMenuItem);
 	    
     }
-
+    
     private void initToolBar() {
         toolbar = new JToolBar();
         // Boutons à rajouter dans la toolbar
@@ -146,6 +176,13 @@ public class MainFrame extends JFrame {
                 deleteButtonActionPerformed(evt);
             }
         });
+        // Load Departments
+        JButton loadDepartmentButton = new JButton("More Departments");
+        loadDepartmentButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent evt) {
+        		loadDepartmentButtonActionPerformed(evt);
+        	}
+        });
         comboBox = new JComboBox<String>();
 
         comboBox.addItemListener(new ItemListener() {
@@ -159,6 +196,7 @@ public class MainFrame extends JFrame {
         toolbar.add(editButton);
         toolbar.add(deleteButton);
         toolbar.add(addDepartmentButton);
+        toolbar.add(loadDepartmentButton);
         toolbar.add(comboBox);
     }
 
@@ -206,6 +244,7 @@ public class MainFrame extends JFrame {
         }
         // Initialiser le store et le département en édition
         allViews = new ArrayList<DepartmentCanvas>();
+        loadedViews = new ArrayList<DepartmentCanvas>();
         ArrayList<Department> departements = new ArrayList();
         String storeName = JOptionPane.showInputDialog(this, "Nom du magasin");
         if (storeName != null || !storeName.isEmpty()) {
@@ -235,6 +274,7 @@ public class MainFrame extends JFrame {
             tabBar.setSelectedIndex(index);
             tabBar.setVisible(true);
             allViews.add(cd);
+            loadedViews.add(cd);
             currentView = cd;
             
             /*// Rajouter la zone d'édition dans la page
@@ -250,6 +290,7 @@ public class MainFrame extends JFrame {
 
     private void loadStoreMenuItemActionPerformed(ActionEvent evt) {
         allViews = new ArrayList<DepartmentCanvas>();
+        loadedViews = new ArrayList<DepartmentCanvas>();
         JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
         // dans le champ AddressField via une interface d'exploration de
         // fichiers
@@ -270,11 +311,22 @@ public class MainFrame extends JFrame {
                     allViews.add(new DepartmentCanvas(d));
                     comboBox.addItem(d.getDepartmentName());
                 }
-
-                // Rajouter la zone d'édition dans la page
+                
+                // Rétablir la toolBar
+                toolbar.setVisible(true);
+                
+                // Rétablir la TabBar : ouvrir le premier Department uniquement
                 currentView = allViews.get(0);
+                loadedViews.add(currentView);
+                tabBar.add(currentView.getTarget().getDepartmentName(),currentView);
+                int index = tabBar.getTabCount() - 1;
+                tabBar.setSelectedIndex(index);
+                tabBar.setVisible(true);
+                
+                
+                // Rajouter la zone d'édition dans la page
                 cml = new CanvasMouseListener(currentView);
-                getContentPane().add(currentView, BorderLayout.CENTER);
+                //getContentPane().add(currentView, BorderLayout.CENTER);
                 pack();
             } catch (JDOMException | IOException e) {
                 // TODO Auto-generated catch block
@@ -327,7 +379,57 @@ public class MainFrame extends JFrame {
                     "Store Manager", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    private void loadDepartmentButtonActionPerformed(ActionEvent evt) {
+    	if (loadedViews.size()!=allViews.size()) {
+    		JFrame frame = new JFrame("Open more Departments");
+    		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    		JPanel panelBoxes = new JPanel(new GridLayout(3,1));
+    		// Liste de Departments non chargés
+    		ArrayList<JCheckBox> boxes = new ArrayList<JCheckBox>();
+    		for (int i=0;i<allViews.size();i++) {
+    			DepartmentCanvas c = allViews.get(i);
+    			if (!(loadedViews.contains(c))) {
+    				JCheckBox checkBox = new JCheckBox(c.getTarget().getDepartmentName(),false);
+    				checkBox.setMnemonic(KeyEvent.VK_S);
+    				panelBoxes.add(checkBox,BorderLayout.CENTER);
+    				boxes.add(checkBox);
+    			} else boxes.add(null);
+    		}
+    		// Bouton pour valider
+    		JButton loadCheckedDepartmentsButton = new JButton("Load");
+    		ActionListener listener = new ActionListener () {
+    	    	public void actionPerformed(ActionEvent evt) {
+    	    		for (int i=0; i<boxes.size();i++) {
+    	    			if ((boxes.get(i)!=null)&&(boxes.get(i).isSelected())) {
+    	    				// Associer la case cochée au Department dans la liste
+    	    				DepartmentCanvas loadedDept = allViews.get(i); 
+    	    				// Ajout des Departments cochés à la liste des vues chargées 
+    	    				loadedViews.add(loadedDept);
+    	    				// Création des onglets
+    	    				tabBar.add(loadedDept.getTarget().getDepartmentName(),loadedDept);
+    	    			}
+    	    		}
+    	    		frame.dispose();
+    				repaint();
+    				pack();
+    	    	}
+    	    };
+    	    loadCheckedDepartmentsButton.addActionListener(listener);
+    		JPanel panelLoad = new JPanel(new GridLayout(0,1));
+    		panelLoad.add(loadCheckedDepartmentsButton,BorderLayout.SOUTH);
+    		frame.add(panelBoxes, BorderLayout.NORTH);
+    		frame.add(panelLoad, BorderLayout.SOUTH);
+    		frame.setSize(600, 300);
+    		frame.setVisible(true);
+    	}
+    }
 
+    private void loadCheckedDepartmentsButtonActionPerformed(ActionEvent evt) {
+    	
+    }
+    
+    // Listeners des différents composants de la TabBar
     private void addTabActionPerformed (ActionEvent evt) {
     	String departmentName = JOptionPane.showInputDialog(this,
                         "Nom du département");
@@ -338,14 +440,15 @@ public class MainFrame extends JFrame {
 
                     // Notifier la combobox
                     comboBox.addItem(departmentName);
-
+                    
                     // Rajouter la zone d'édition dans la page
                     DepartmentCanvas newView = new DepartmentCanvas(
                             departmentEdited);
                     tabBar.add(departmentName, newView);
                     int index = tabBar.getTabCount() - 1;
                     tabBar.setSelectedIndex(index);
-                    //allViews.add(newView);
+                    allViews.add(newView);
+                    loadedViews.add(newView);
                     comboBox.setSelectedItem(departmentName);
                     //getContentPane().remove(currentView);
                     currentView = newView;
@@ -357,7 +460,13 @@ public class MainFrame extends JFrame {
                 }
     }
         
+    private void renameTabMenuItemActionPerformed(ActionEvent evt) {
+    	
+    }
     
+    private void deleteTabMenuItemActionPerformed(ActionEvent evt) {
+    	
+    }
     
     private void addDepartmentButtonActionPerformed(ActionEvent evt) {
         // try pour si currentView non existant
