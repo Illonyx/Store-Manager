@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
 import java.time.chrono.Era;
 import java.util.ArrayList;
@@ -241,7 +242,7 @@ public class MainFrame extends JFrame {
     	//Récupérer le canvas sélectionné
     	DepartmentCanvas dc = (DepartmentCanvas) tabBar.getSelectedComponent();
     	currentStore = saveUpdatedDepartment(dc, tabBar.getSelectedIndex());
-    	StoreUtils.saveStore(currentStore);
+    	if(currentStore.path.equals(""))StoreUtils.saveStore(currentStore);
     }
     
     private void saveAllDepartmentsButtonActionPerformed(ActionEvent evt){
@@ -251,8 +252,8 @@ public class MainFrame extends JFrame {
     		if(dc.hasChanged()==true){
     			currentStore = saveUpdatedDepartment(dc,i);
     		}
-    		StoreUtils.saveStore(currentStore);
     	}
+    	if(currentStore.path.equals("")) StoreUtils.saveStore(currentStore);
     }
     
     //Bout de code répété
@@ -357,11 +358,17 @@ public class MainFrame extends JFrame {
 
         if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             String pathName = chooser.getSelectedFile().getAbsolutePath();
-
             try {
-                currentStore = StoreUtils.loadStore(pathName);
+            	//Position d'initialisation
+            	if(tabBar.getTabCount() != 0){
+            		for(int i=1;i<tabBar.getTabCount();i++){
+                		tabBar.remove(i);
+                	}
+            	}
+            	
+                currentStore = StoreUtils.loadStore(pathName,chooser.getSelectedFile().getName().replace(".xml", ""));
 
-                // Mettre à jour la comboBox
+                setTitle(currentStore.getStoreName());
                 for (Department d : currentStore.getDepartmentsList()) {
                 	tabBar.add(d.getDepartmentName(), new DepartmentCanvas(d));
                 }
@@ -384,9 +391,38 @@ public class MainFrame extends JFrame {
     private void saveStoreMenuItemActionPerformed(ActionEvent evt) {
     	
     	// Demander à l'utilisateur où il veut sauvegarder (Nom de la fenetre : Enregistrer sous)
-    	// Puis sauvegarde des modifications
-        // Stockage du store en xml
+    	JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
+        chooser.setDialogTitle("Enregister sous");
+        chooser.setApproveButtonText("Sauvegarder");
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        chooser.setSelectedFile(new File(currentStore.getStoreName() + ".xml"));
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+        	String fileEntered = chooser.getSelectedFile().getName();
+        	System.out.println(fileEntered + fileEntered.endsWith(".xml"));
+        	if(fileEntered.endsWith(".xml")){
+        		String newStoreName = fileEntered.replace(".xml", "");
+        		currentStore.setStoreName(newStoreName);
+            	setTitle(newStoreName);
+            	currentStore.path = chooser.getSelectedFile().getAbsolutePath();
+        	} else {
+        		currentStore.setStoreName(fileEntered);
+            	setTitle(fileEntered);
+            	currentStore.path = chooser.getSelectedFile().getAbsolutePath() + ".xml";
+        	}
+        	
+        	
+        
+    	//Enregistrement des modifications
+    	for(int i=1;i<tabBar.getTabCount();i++){
+    		DepartmentCanvas dc = (DepartmentCanvas) tabBar.getComponentAt(i);
+    		if(dc.hasChanged()==true){
+    			currentStore = saveUpdatedDepartment(dc,i);
+    		}
+    		
+    	}
+    	//Sauvegarde
         StoreUtils.saveStore(currentStore);
+        }
 
     }
 

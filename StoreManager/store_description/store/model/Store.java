@@ -6,6 +6,7 @@ public class Store {
 	
 	private String storeName;
 	private ArrayList<Department> departmentsList;
+	public String path = "";
 	
 	public Store(){
 		this.storeName="default";

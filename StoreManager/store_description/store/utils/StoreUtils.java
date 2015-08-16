@@ -34,6 +34,7 @@ public class StoreUtils {
 		//Création de la racine store et de son nom
 		Element racine = new Element("store");
 		String fileName = s.getStoreName() + ".xml";
+		String pathToWrite = (s.path.equals("")) ? fileName : s.path;
 		racine.setAttribute("nom",s.getStoreName());
 		
 		//Création de tous les sous-éléments
@@ -66,17 +67,15 @@ public class StoreUtils {
 		 try
 	      {
 	         XMLOutputter sortie = new XMLOutputter(Format.getPrettyFormat());
-	         sortie.output(document, new FileOutputStream(fileName));
+	         sortie.output(document, new FileOutputStream(pathToWrite));
 	      }
 	      catch (java.io.IOException e){}	
 	}
 	
 	
-	public static Store loadStore(String pathname) throws JDOMException, IOException
+	public static Store loadStore(String pathname, String storeName) throws JDOMException, IOException
 	{
 		
-		//String storeName = pathname.substring(0, pathname.length()-4);
-		String storeName = "bordel";
 		ArrayList<Department> allDepartments = new ArrayList<Department>();
 		//Préparation de l'importation de données
 		File f = new File(pathname);
