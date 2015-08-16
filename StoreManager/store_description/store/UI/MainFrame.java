@@ -258,13 +258,14 @@ public class MainFrame extends JFrame {
     //Bout de code répété
     private Store saveUpdatedDepartment(DepartmentCanvas dc, int tabIndex){
     	Department d = dc.getUpdatedDepartment();
-    	if(DepartmentUtils.isDepartmentAlreadyExisting(currentStore,d) == false){
+    	if(DepartmentUtils.isDepartmentAlreadyExisting(currentStore,d) == true){
     		String departmentName = JOptionPane.showInputDialog(this,
                     "Nom du département");
             if (departmentName == null || departmentName.isEmpty()) {
-                departmentName = "default";
+            	//Pas de sauvegarde faite
+            	return currentStore;
             }
-            d.setDepartmentName(departmentName);
+            else d.setDepartmentName(departmentName);
     	}
     	dc.setHasChanged(false);
     	tabBar.setTitleAt(tabIndex, d.getDepartmentName());
@@ -330,6 +331,7 @@ public class MainFrame extends JFrame {
             }
             Department aDepartment = new Department(departmentName,
                     new ArrayList<Shelf>());
+            DepartmentUtils.departmentHasBeenChanged(currentStore, aDepartment);
             
             // Afficher les barres
             toolbar.setVisible(true);
