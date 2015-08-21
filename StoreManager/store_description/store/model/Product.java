@@ -10,6 +10,10 @@ public class Product {
 	private int productId;
 	
 	//Produit pour tester
+	public Product(){
+		this.productName="";
+	}
+	
 	public Product(String _productName){
 		this.productName=_productName;
 		this.productId=1;

@@ -1,0 +1,14 @@
+
+Commandes : 
+mysql -u root -p --default-character-set=utf8
+
+id, nom, catégorie, price : obligatoire
+provenance, def, weight : non obligatoire
+
+insert into products (nom,category,price,provenance,weight) values 
+('Digestive Biscuits', 'Food', 1.45,'GB',0.3),
+('Shreddies','Food',4.60,'GB',0.45),
+('Saville Row Suit', 'Textile', 200.0,'US',0.5);
+
+insert into products (nom,category,subcategory,price,provenance,def,weight) values 
+('Irish cider','Food','Beverages and Spirits',3.50,'GB','20/09/2015',0.8);

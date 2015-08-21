@@ -12,6 +12,10 @@ public class ProductPlace {
 	private int productsNumber; 
 	//private int id;
 	
+	public ProductPlace(){
+		this.productInPlace = new Product("");
+	}
+	
 	public ProductPlace(Product _productInPlace, int _placeCapacity){
 		//this.id=id;
 		this.placeCapacity=_placeCapacity;
