@@ -1,7 +1,21 @@
 # Store-Manager
-A cool soft' I want to develop
 
-Things to do : 
+TRAVAUX EN COURS sur ce projet (et donc inexploitable pour le moment): 
+
+Projet en plein refactor  : 
+- Le projet sera construit avec des modules maven
+- La base de données est gérée de manière totalement indépendante et décentralisée dans un module (Spring Data + Hibernate)
+- L'interface graphique standalone va être isolée dans un module puis mise en pause
+- L'interface en XML plutôt boiteuse sera refactorisée, une nouvelle interface en json sera développée
+- Le projet s'appuiera plutôt sur une interface web
+- De la documentation est en cours d'écriture
+
+Technos : Java, Maven, Spring
+Outils : Trello, Gliffy
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Things to do (OLD, TO UPDATE): 
 
 ~1480 lignes actuellement (Playground non compté), Probablement 700 lignes à faire en plus
 --- Sauvegarde (85%): -> Moi
