@@ -37,8 +37,8 @@ public class SubFrame extends JFrame{
 		this.shelfSelected=selected;
 		
 		//Ajout d'une banane pour tester XD
-		ProductPlace pp = new ProductPlace(new Product("banane"),30);
-		pp.setProductsNumber(13);
+		ProductPlace pp = new ProductPlace(new Product("1","Digestive Biscuits" , 0.50),30);
+		//pp.setProductsNumber(0);
 		this.shelfSelected.getProductPlacesList().add(pp);
 		
 		productPlacePanels = new ProductPlacePanel[6];
