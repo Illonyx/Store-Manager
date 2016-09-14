@@ -37,7 +37,17 @@ public class Batch {
         this.refProduct = refProduct;
     }
 
-    public int getCurrentNumber() {
+    public Batch(Batch batch) {
+    	this.batchCode = batch.batchCode;
+        this.comingDate = batch.comingDate;
+        this.dlc = batch.dlc;
+        this.currentNumber = batch.currentNumber;
+        this.arrivalNumber = batch.arrivalNumber;
+        
+        this.refProduct = batch.refProduct;
+	}
+
+	public int getCurrentNumber() {
 		return currentNumber;
 	}
 

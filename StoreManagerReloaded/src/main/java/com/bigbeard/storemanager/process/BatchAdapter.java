@@ -36,25 +36,36 @@ public class BatchAdapter {
 		return availableNumber;
 	}
 	
-	public List<Batch> takeProductsFromStock (int nbProducts) {
+	public List<Batch> takeProducts (int nbProducts) {
 		List<Batch> batchesToSend = new ArrayList<Batch>();
 		Collection<Batch> matchingBatches = batchRepository.findByRefProductOrderByComingDateAsc(product);
 		
 		for (Batch batch : matchingBatches) {
 			if (nbProducts - batch.getCurrentNumber() > 0) {
+				//Add all batch products
 				batchesToSend.add(batch);
 				nbProducts -= batch.getCurrentNumber();
+				
+				//Empty the batch
 				batch.setCurrentNumber(0);
 			} else {
+				
+				//Add maximum possible products number
+				Batch batchToAdd = new Batch(batch);
+				batchToAdd.setCurrentNumber(nbProducts);
+				batchesToSend.add(batchToAdd);
+				
+				//Stock batch has only remaining products
 				int productsRemaining = batch.getCurrentNumber() - nbProducts;
-				//batchesToSend.add()
 				batch.setCurrentNumber(productsRemaining);
+				
 				break;
 			}
 		}
 		
 		return batchesToSend;
 	}
+	
 	
 	
 }
