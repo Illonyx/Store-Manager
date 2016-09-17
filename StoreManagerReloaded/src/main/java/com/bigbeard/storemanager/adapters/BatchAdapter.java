@@ -1,4 +1,4 @@
-package com.bigbeard.storemanager.process;
+package com.bigbeard.storemanager.adapters;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +48,8 @@ public class BatchAdapter {
 				
 				//Empty the batch
 				batch.setCurrentNumber(0);
+				batchRepository.save(batch);
+				
 			} else {
 				
 				//Add maximum possible products number
@@ -58,7 +60,7 @@ public class BatchAdapter {
 				//Stock batch has only remaining products
 				int productsRemaining = batch.getCurrentNumber() - nbProducts;
 				batch.setCurrentNumber(productsRemaining);
-				
+				batchRepository.save(batch);
 				break;
 			}
 		}

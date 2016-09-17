@@ -27,7 +27,11 @@ public class Batch {
 	
 	protected Batch() {}
 
-    public Batch(String batchCode, String comingDate, String dlc, int arrivalNumber, int currentNumber, Product refProduct) {
+    public long getId() {
+		return id;
+	}
+
+	public Batch(String batchCode, String comingDate, String dlc, int arrivalNumber, int currentNumber, Product refProduct) {
         this.batchCode = batchCode;
         this.comingDate = comingDate;
         this.dlc = dlc;
@@ -60,6 +64,21 @@ public class Batch {
         return String.format(
                 "Batch[id=%d, code='%s', number='%s', comingDate='%s', dlc='%s', arrivalNumber='%s', refProduct = '%s']",
                 id, batchCode, this.currentNumber, this.comingDate, this.dlc, this.arrivalNumber, this.refProduct);
+    }
+	
+	@Override
+	public boolean equals(Object obj) {
+		boolean isEqual = false;
+		if(obj != null && obj instanceof Batch){
+			Batch batch = (Batch) obj;
+			isEqual = (this.batchCode.equals(batch.batchCode));
+		}
+        return isEqual;
+	}
+	
+	 @Override
+	 public int hashCode() {
+        return this.batchCode.hashCode();
     }
     
     //--------------------------------------------------------------------------

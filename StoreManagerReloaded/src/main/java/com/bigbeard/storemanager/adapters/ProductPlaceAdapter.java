@@ -1,4 +1,4 @@
-package com.bigbeard.storemanager.process;
+package com.bigbeard.storemanager.adapters;
 
 import java.util.ArrayList;
 import java.util.List;
