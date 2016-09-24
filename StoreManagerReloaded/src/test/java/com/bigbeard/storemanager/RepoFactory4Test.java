@@ -50,4 +50,5 @@ public class RepoFactory4Test
         txManager.setEntityManagerFactory( entityManagerFactory() );
         return txManager;
     }
+    
 }

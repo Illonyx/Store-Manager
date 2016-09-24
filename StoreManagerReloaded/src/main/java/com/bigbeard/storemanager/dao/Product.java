@@ -24,10 +24,9 @@ public class Product {
     private String category;
     private String subcategory;
     
-    private double price;
+    private double price;//TODO : Prendre une décision pour le prix. Dans le batch ou dans le produit même
+    //TODO: On pourra probablement appliquer une promotion sur un batch...
     private double weight;
-    
-    private String def;
     
     @OneToMany(mappedBy="refProduct")
     Collection<Batch> batches;

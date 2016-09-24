@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+<products id="1" nom="Nesquik" provenance="CH" category="FOOD" subcategory="Powders" price="3.00" weight="1.0" />
+</dataset>
