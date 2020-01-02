@@ -49,3 +49,51 @@ Things to do (OLD, TO UPDATE):
 
 --------------------------------- Erreurs/Discussion----------------------------------------
 
+Recup structure JSON : 
+
+{
+	name="Eleclerc",
+	size="Hypermarché",
+	category="General/Bricolage/Food/Textile..."
+	gpscoord={a voir pour cet attribut},
+	searchlabel="Eleclerc 71 rue Jean Jaures 92300 Lev Perret",
+	imageurl="www.google.fr/eleclercFacade", (plusieurs images!)
+	Le reste est à brainstormer (a un parking?, accès handicapé, horaires ouverture, )
+	departments=[{
+		id="FOOD"
+		nom = "Secteur food",
+		category = "FOOD",
+		floor=1,
+		shelves=[
+			{
+				id="surg",
+				nom="Surgelés",
+				representation='x:7,y:259;w=789;h=87',
+				productplaces=[{
+					id="belly_basket_419",
+					name="belly_basket",
+					position='',
+					representation="image/coordonnées?"
+					capacity="40",
+					product={Product(id, nom, provenance, prix, poids, category, subcateg)/stocker produits en bdd},
+					batches=[{
+						Batch(batchCode, comingDate, dlc, currentNum, provenance)
+				}]
+
+				}]
+
+			}
+
+		]
+
+
+
+	}
+	]
+}
+
+
+
+
+
+
